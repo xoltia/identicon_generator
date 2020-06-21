@@ -183,7 +183,12 @@ async fn gen_identicon(req: Request<Body>) -> Result<Response<Body>, Infallible>
 
 #[tokio::main]
 async fn main() {
-    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
+    let port = std::env::var("PORT")
+        .expect("Expected PORT environment variable")
+        .parse::<u16>()
+        .expect("Could not parse PORT environment variable");
+
+    let addr = SocketAddr::from(([0, 0, 0, 0], port));
 
     let make_svc = make_service_fn(|_conn| async {
         Ok::<_, Infallible>(service_fn(gen_identicon))
